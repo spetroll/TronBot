@@ -17,56 +17,42 @@ namespace TronBot
 
             GameState g = new GameState(readMap(), Map.MyLocation, Map.OpponentLocation);
             MapAnalyzer ma = new MapAnalyzer(g);
-            List<GameState> succPlayer = g.getSuccessorStates(Player);
-           
-            //fix that later
-            if (succPlayer.Count == 0)
+
+            if (g.getSuccessorStates(Player).Count == 0)
             {
                 return randomMove();
             }
+
             int distance = ma.distance(g.Player, g.Opponent);
-            //let's see if they are both separated already
-            
             bool separated = !ma.sameField(g.Player, g.Opponent);
             
             EvaluatorCollection ec = new EvaluatorCollection();
-
-
-            if (!separated && distance > 5)
-            {
-                 ec.add(new ChaseEvaluator()); 
-            }
-            else if (!separated && distance <= 5)
-            {
-                ec.add(new CutOffEvaluator());
-            }
-            else
-            {
-                ec.add(new FloodFillEvaluator());
-            }
+            ec.add(new FloodFillEvaluator());
+            
             
             Evaluator finalEval = new MultiplyEvaluators(new GameWinEvaluator(), ec);
             
             MiniMaxSearch minmax = new MiniMaxSearch();
-            int depth = 2;
-            GameState best = new GameState(minmax.doSearch(g, finalEval, Player, depth));
-            // 
+            
             timer.Stop();
-            double time = timer.Duration;
-            while (time < 0.2)
+            int depth = 3;
+            double time = timer.Duration * 1000;
+            GameState best = new GameState(minmax.doSearch(g, finalEval, Player, depth, separated, time));
+            while (time < 800)
             {
+                depth++;
                 timer.Start();
-                depth +=2;
-                best = minmax.doSearch(g, finalEval, Player, depth);
+                best = new GameState(minmax.doSearch(g, finalEval, Player, depth, separated, time));
                 timer.Stop();
-                time += timer.Duration;
+                time += timer.Duration*1000;
             }
-            Console.Error.WriteLine(depth);
+            Console.Error.WriteLine(separated + " " + time + " " + depth);
             //ma.printMap();
             return intDirectionToString(best.previousPlayerMove.Direction);
 
 
         }
+
 
         public static void Main()
         {

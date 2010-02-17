@@ -7,26 +7,26 @@ namespace TronBot
 {
     public static class MapManipulator
     {
-        public static int floodFill(int[,] map, Point position)
-        {
-            return floodFill(map, position.X, position.Y);
-        }
-        public static int floodFill(int[,] map, int x, int y)
+        //public static int floodFill(int[,] map, Point position)
+        //{
+        //    return fieldFill(map, position.X, position.Y);
+        //}
+        public static int fieldFill(int[,] map, int x, int y)
         {
             if (x < 0 || x >= map.GetLength(0) || y < 0 || y >= map.GetLength(1)) return 0;
             if (map[x, y] == 0)
             {
                 map[x, y] = 5;
-                return 1 + floodFill(map, x + 1, y) + floodFill(map, x - 1, y) + floodFill(map, x, y + 1) + floodFill(map, x, y - 1);
+                return 1 + fieldFill(map, x + 1, y) + fieldFill(map, x - 1, y) + fieldFill(map, x, y + 1) + fieldFill(map, x, y - 1);
             }
             return 0;
         }
 
-        public static int fieldFill(int[,] map, Point position)
+        public static int floodFill(int[,] map, Point position)
         {
             int[,] floodMap = (int[,])map.Clone();
-            return 1 + floodFill(floodMap, position.X + 1, position.Y) + floodFill(floodMap, position.X - 1, position.Y) +
-                       floodFill(floodMap, position.X, position.Y + 1) + floodFill(floodMap, position.X, position.Y - 1);
+            return 1 + fieldFill(floodMap, position.X + 1, position.Y) + fieldFill(floodMap, position.X - 1, position.Y) +
+                       fieldFill(floodMap, position.X, position.Y + 1) + fieldFill(floodMap, position.X, position.Y - 1);
         }
 
         public static int[,] straightLineFromPosition(int[,] map, Point position, int direction)
@@ -93,6 +93,10 @@ namespace TronBot
             }
             return length;
         }
+
+        
+
+
 
     }
 }

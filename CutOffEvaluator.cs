@@ -19,12 +19,12 @@ namespace TronBot
 
             //since MapAnalyzer actually clones the arrays and so player reports the wrong size if being part of the wall, manipulate the array directly
             //and fill opponent first, then check the player field size. this will report correct size
-            int opponentFieldSize = MapManipulator.fieldFill(newMap, player == 0 ? g.Opponent : g.Player);
-            int playerFieldSize = MapManipulator.fieldFill(newMap, player == 1 ? g.Opponent : g.Player);
+            int opponentFieldSize = m.fieldSize(player == 0 ? g.Opponent : g.Player);
+            int playerFieldSize = m.fieldSize(player == 1 ? g.Opponent : g.Player);
 
             //Console.Error.WriteLine(MyTronBot.intDirectionToString(direction));
             //Console.Error.WriteLine("OpponentFieldSize: " + opponentFieldSize + " PlayerFieldSize: " + playerFieldSize);
-            //Console.Error.WriteLine("Utility cutoff: " + (playerFieldSize-opponentFieldSize) + "\n");
+            //Console.Error.WriteLine("Utility cutoff: " + (playerFieldSize - opponentFieldSize) + "\n");
             int evaluation = playerFieldSize - opponentFieldSize;
 
             //now what to do with distance? we want to minimize it but we need higher evaluations for better positions

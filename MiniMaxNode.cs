@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 
 namespace TronBot
 {
@@ -13,6 +14,22 @@ namespace TronBot
         private List<MiniMaxNode> Children;
         private MiniMaxNode Parent;
         public int score;
+        private bool alone;
+        private double time;
+        //private volatile bool timesUp;
+        //private double time;
+
+        //public void timedSearch(int depth)
+        //{
+        //    timesUp = false;
+        //    var timer = new Timer(800 - _start);
+        //    //timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+        //    timer.Elapsed += timer_Elapsed;
+        //    timer.Start();
+        //    expand(depth);
+        //    timer.Stop();
+        //}
+
 
         public MiniMaxNode(GameState g, Evaluator e, int player)
         {
@@ -20,15 +37,22 @@ namespace TronBot
             this.e = e;
             this.player = player;
             Parent = this;
-
         }
-
-        public MiniMaxNode(GameState g, Evaluator e, int player, MiniMaxNode parent)
+        public MiniMaxNode(GameState g, Evaluator e, int player, bool alone)
+        {
+            this.State = g;
+            this.e = e;
+            this.player = player;
+            Parent = this;
+            this.alone = alone;
+        }
+        public MiniMaxNode(GameState g, Evaluator e, int player, MiniMaxNode parent, bool alone)
         {
             this.State = g;
             this.e = e;
             this.player = player;
             this.Parent = parent;
+            this.alone = alone;
         }
 
         public int evaluate(int alpha, int beta)
@@ -39,6 +63,18 @@ namespace TronBot
                // int evaluation = e.evaluation(State, 0);
                 //Console.Error.WriteLine("MinNode {0}{1} - Depth: {2} Children: {3} - Eval:{4}\n", n.State.Player.X, n.State.Player.Y, Depth, Childen.Count, evaluation);
                 return e.evaluation(State, 0);
+            }
+            if (alone)
+            {
+                foreach (MiniMaxNode n in Children)
+                {
+                    int evaluation = n.evaluate(alpha, beta);
+                    if (evaluation <= alpha) return alpha;
+                    if (evaluation < beta) beta = evaluation;
+                    //Console.Error.WriteLine("MinNode {0}{1} - Eval:{2}\n", n.State.Player.X, n.State.Player.Y, evaluation); 
+                }
+                //System.err.println("Min: " + min);
+                return beta;
             }
             //opponent playing, minimize outcome
             if(player == 1)
@@ -71,53 +107,60 @@ namespace TronBot
             return 0;
         }
 
-
-        //creates the child nodes and expands the current node with them
         public void expand()
         {
-            //next moves will always be the other players moves
-
-            //opponent moves need successors generated from parent because of simulatneous moves
             List<GameState> childStates = new List<GameState>();
-            if (player == 0)
+            Children = new List<MiniMaxNode>();
+            if (!alone)
             {
-                
-                childStates = Parent.State.getSuccessorStates((player + 1) % 2);
+                if (player == 0)
+                {
+                    childStates = Parent.State.getSuccessorStates((player + 1) % 2);
+                }
+                else
+                {
+                    childStates = State.getSuccessorStates((player + 1) % 2);
+                }
 
+                
+                foreach (GameState g in childStates)
+                {
+                    Children.Add(new MiniMaxNode(g, e, (player + 1) % 2, this, this.alone));
+                }
             }
             else
             {
+                childStates = State.getSuccessorStates(0);
+                foreach (GameState g in childStates)
+                {
+                    Children.Add(new MiniMaxNode(g, e, 0, this, this.alone));
+                }
 
-                childStates = State.getSuccessorStates((player + 1) % 2);
-            }
-            //foreach (GameState gs in childStates)
-            //{
-            //    Console.Error.WriteLine(gs.ToString());
-            //}
-            Children = new List<MiniMaxNode>();
-            foreach (GameState g in childStates)
-            {
-                
-                Children.Add(new MiniMaxNode(g, e, (player + 1) % 2, this));
             }
         }
 
-        private void expand(int depth)
+        private void expand(int depth, double usedTime)
         {
-            if(depth > 0)
+            this.time = usedTime;
+            //Console.Error.WriteLine("Timer: "+time);
+            if (time <= 800 && depth >0)
             {
+                HiPerfTimer timer = new HiPerfTimer();
+                timer.Start();
                 expand();
                 foreach (MiniMaxNode n in Children)
                 {
-                    n.expand(depth - 1);
+                    expand(depth - 1, timer.Duration * 1000);
                 }
+                timer.Stop();
+                time += timer.Duration * 1000;
             }
         }
 
-        public static MiniMaxNode getGameTree(GameState g, Evaluator e, int player, int depth)
+        public static MiniMaxNode getGameTree(GameState g, Evaluator e, int player,int depth, bool alone, double usedTime)
         {
-            MiniMaxNode n = new MiniMaxNode(g, e, player);
-            n.expand(depth);
+            MiniMaxNode n = new MiniMaxNode(g, e, player, alone);
+            n.expand(depth, usedTime);
             return n;
         }
 

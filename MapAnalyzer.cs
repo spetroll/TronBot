@@ -37,28 +37,15 @@ namespace TronBot
         public int fieldSize(Point position)
         {
             MapAnalyzer ma = new MapAnalyzer(Map);
-            return ma.floodFill(position);
-        }
-
-        private int floodFill(int[,] floodMap, Point position)
-        {
-            return MapManipulator.floodFill(floodMap, position);
-        }
-        private int floodFill(int[,] floodMap, int x, int y)
-        {
-            return MapManipulator.floodFill(floodMap, x, y);
-        }
-        private int floodFill(Point position)
-        {
             int[,] temp = (int[,])Map.Clone();
-            return MapManipulator.fieldFill(temp, position);
+            return MapManipulator.floodFill(temp, position);
         }
 
         public bool sameField(Point pos1, Point pos2)
         {
             MapAnalyzer ma = new MapAnalyzer(Map);
-            int pos1size = ma.floodFill(pos1);
-            int pos2size = ma.floodFill(pos2);
+            int pos1size = ma.fieldSize(pos1);
+            int pos2size = ma.fieldSize(pos2);
             Console.Error.WriteLine("Pos1: " + pos1size + " Pos2: " + pos2size);
             return (pos1size == pos2size);
         }
@@ -81,7 +68,7 @@ namespace TronBot
 
         public int distance(Point pos1, Point pos2)
         {
-            return Math.Abs(pos1.X - pos2.X) + (pos1.Y - pos2.Y);
+            return Math.Abs(pos1.X - pos2.X) + Math.Abs(pos1.Y - pos2.Y);
         }
     }
 }
