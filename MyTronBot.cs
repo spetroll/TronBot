@@ -27,28 +27,36 @@ namespace TronBot
             bool separated = !ma.sameField(g.Player, g.Opponent);
             
             EvaluatorCollection ec = new EvaluatorCollection();
-            ec.add(new FloodFillEvaluator());
+
+            if (!separated)
+            {
+                ec.add(new CutOffEvaluator());
+                ec.add(new VoronoiEvaluator());                
+            }
+            else
+            {
+                ec.add(new FloodFillEvaluator());
+            }
+            MultiplyEvaluators finalEval = new MultiplyEvaluators(new GameWinEvaluator(), ec);
             
-            
-            Evaluator finalEval = new MultiplyEvaluators(new GameWinEvaluator(), ec);
             
             MiniMaxSearch minmax = new MiniMaxSearch();
-            
             timer.Stop();
-            int depth = 3;
+            int depth = 1;
             double time = timer.Duration * 1000;
             GameState best = new GameState(minmax.doSearch(g, finalEval, Player, depth, separated, time));
-            while (time < 800)
+            while (time < 700)
             {
-                depth++;
+                depth ++;
                 timer.Start();
                 best = new GameState(minmax.doSearch(g, finalEval, Player, depth, separated, time));
                 timer.Stop();
-                time += timer.Duration*1000;
+                time += timer.Duration * 1000;
             }
-            Console.Error.WriteLine(separated + " " + time + " " + depth);
+            //Console.Error.WriteLine(separated + " " + time + " " + depth);
             //ma.printMap();
             return intDirectionToString(best.previousPlayerMove.Direction);
+            //return "n";
 
 
         }

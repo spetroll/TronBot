@@ -25,12 +25,13 @@ namespace TronBot
                 timer.Stop();
                 time += timer.Duration * 1000;
             }
-            //trees.ForEach(i => i.State.ToString());
+            //trees.ForEach(i => Console.Error.WriteLine(i.ToString()));
             int eval = 0;
             MiniMaxNode bestNode = new MiniMaxNode(states[0], e, player);
             foreach (MiniMaxNode tree in trees)
             {
                 tree.score = tree.evaluate(int.MinValue, int.MaxValue);
+                //Console.Error.WriteLine(tree.ToString());
                 if (tree.score > eval)
                 {
                     eval = tree.score;

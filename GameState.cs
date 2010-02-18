@@ -49,7 +49,10 @@ namespace TronBot
             MapAnalyzer ma = new MapAnalyzer(Map);
             int playerFields = ma.fieldSize(Player);
             int opponentFields = ma.fieldSize(Opponent);
-            if (Player.X == Opponent.X && Player.Y == Opponent.Y) return -50;
+            if (Player.X+1 == Opponent.X && Player.Y == Opponent.Y) return -10;
+            if (Player.X-1 == Opponent.X && Player.Y == Opponent.Y) return -10;
+            if (Player.X == Opponent.X && Player.Y+1 == Opponent.Y) return -10;
+            if (Player.X == Opponent.X && Player.Y-1 == Opponent.Y) return -10;
             if (playerFields <= 1) return -100;
             if (opponentFields <= 1) return 100;
             return 0;
@@ -160,9 +163,7 @@ namespace TronBot
         public override string ToString()
         {
             EvaluatorCollection ec = new EvaluatorCollection();
-            ec.add(new FloodFillEvaluator());
-            ec.add(new ChaseEvaluator());
-            ec.add(new CutOffEvaluator());
+            ec.add(new VoronoiEvaluator());
             Evaluator e = new MultiplyEvaluators(new GameWinEvaluator(), ec);
             //return String.Format("Dir: {6}, PlayerPos: {0}|{1} - Score: {4}, OpponentPos: {2}|{3}, Score: {5}", Player.X, Player.Y, Opponent.X, Opponent.Y
             //                                                                                                    , e.evaluation(this, 0)
@@ -172,6 +173,7 @@ namespace TronBot
             return String.Format("Dir: {4}, PlayerPos: {0}|{1}, OpponentPos: {2}|{3}", Player.X, Player.Y, Opponent.X, Opponent.Y
                                                                                                                 
                                                                                                                 , MyTronBot.intDirectionToString(previousPlayerMove.Direction)
+                                                                                                                
                                                                                                                 );
         }
 

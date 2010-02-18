@@ -34,6 +34,8 @@ namespace TronBot
             return CountWalls(C.X, C.Y);
         }
 
+        
+
         public int fieldSize(Point position)
         {
             MapAnalyzer ma = new MapAnalyzer(Map);
@@ -41,12 +43,26 @@ namespace TronBot
             return MapManipulator.floodFill(temp, position);
         }
 
+        public List<Point> getNeighbours(Point c)
+        {
+            List<Point> list = new List<Point>();
+            int x = c.X;
+            int y = c.Y;
+            if (Map[x + 1, y] == 0) { list.Add(new Point(x + 1, y)); }
+            if (Map[x - 1, y] == 0) { list.Add(new Point(x - 1, y)); }
+            if (Map[x, y + 1] == 0) { list.Add(new Point(x, y + 1)); }
+            if (Map[x, y - 1] == 0) { list.Add(new Point(x, y - 1)); }
+            return list;
+        }
+
+        
+
         public bool sameField(Point pos1, Point pos2)
         {
             MapAnalyzer ma = new MapAnalyzer(Map);
             int pos1size = ma.fieldSize(pos1);
             int pos2size = ma.fieldSize(pos2);
-            Console.Error.WriteLine("Pos1: " + pos1size + " Pos2: " + pos2size);
+            //Console.Error.WriteLine("Pos1: " + pos1size + " Pos2: " + pos2size);
             return (pos1size == pos2size);
         }
 
@@ -59,7 +75,7 @@ namespace TronBot
             {
                 for (int x = 0; x < width; x++)
                 {
-                    Console.Error.Write(Map[x, y] == 1 ? '#' : ' ');
+                    Console.Error.Write(Map[x, y]);
                 }
                 Console.Error.Write('\n');
             }

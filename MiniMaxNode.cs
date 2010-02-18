@@ -68,9 +68,9 @@ namespace TronBot
             {
                 foreach (MiniMaxNode n in Children)
                 {
-                    int evaluation = n.evaluate(alpha, beta);
-                    if (evaluation <= alpha) return alpha;
-                    if (evaluation < beta) beta = evaluation;
+                    this.score = n.evaluate(alpha, beta);
+                    if (this.score <= alpha) return alpha;
+                    if (this.score < beta) beta = this.score;
                     //Console.Error.WriteLine("MinNode {0}{1} - Eval:{2}\n", n.State.Player.X, n.State.Player.Y, evaluation); 
                 }
                 //System.err.println("Min: " + min);
@@ -81,9 +81,9 @@ namespace TronBot
             {
                 foreach (MiniMaxNode n in Children)
                 {
-                    int evaluation = n.evaluate(alpha, beta);
-                    if (evaluation <= alpha) return alpha;
-                    if (evaluation < beta) beta = evaluation;
+                    this.score = n.evaluate(alpha, beta);
+                    if (this.score <= alpha) return alpha;
+                    if (this.score < beta) beta = this.score;
                     //Console.Error.WriteLine("MinNode {0}{1} - Eval:{2}\n", n.State.Player.X, n.State.Player.Y, evaluation); 
                 }
                 //System.err.println("Min: " + min);
@@ -94,9 +94,9 @@ namespace TronBot
             {
                 foreach(MiniMaxNode n in Children)
                 {
-                    int evaluation = n.evaluate(alpha, beta);
-                    if (evaluation >= beta) return beta;
-                    if (evaluation > alpha) alpha = evaluation;
+                    this.score = n.evaluate(alpha, beta);
+                    if (this.score >= beta) return beta;
+                    if (this.score > alpha) alpha = this.score;
                    // Console.Error.WriteLine("MaxNode {0}{1} - Eval:{2}\n", n.State.Player.X, n.State.Player.Y, evaluation); 
                 }
                 
@@ -143,7 +143,7 @@ namespace TronBot
         {
             this.time = usedTime;
             //Console.Error.WriteLine("Timer: "+time);
-            if (time <= 800 && depth >0)
+            if (time <= 650 && depth >0)
             {
                 HiPerfTimer timer = new HiPerfTimer();
                 timer.Start();
@@ -166,13 +166,13 @@ namespace TronBot
 
         public override string ToString()
         {
-            //string output = "";
-            //if (Children != null && Children.Count > 0)
-            //    foreach (MiniMaxNode n in Children)
-            //    {
-            //        output += "\t" + n.ToString() + "";
+            string output = "";
+            if (Children != null && Children.Count > 0)
+                foreach (MiniMaxNode n in Children)
+                {
+                    output += "\t" + n.ToString() + "";
 
-            //    }
+                }
             return this.State.ToString() + ", Score: " + this.score;
         }
     }
