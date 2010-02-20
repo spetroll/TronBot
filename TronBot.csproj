@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChaseEvaluator.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="CutOffEvaluator.cs" />
     <Compile Include="Evaluator.cs" />
     <Compile Include="EvaluatorCollection.cs" />

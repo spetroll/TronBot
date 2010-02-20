@@ -7,6 +7,6 @@ namespace TronBot
 {
     public interface Search
     {
-        GameState doSearch(GameState g, Evaluator e);
+        GameState doSearch(GameState g, Evaluator e, int depth, double usedTime);
     }
 }

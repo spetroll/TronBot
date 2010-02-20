@@ -10,23 +10,12 @@ namespace TronBot
 
        public int evaluation(GameState g, int player)
        {
-            int direction = g.previousPlayerMove.Direction;
-            int[,] map = g.Map;
-
-            int[,] newMap = MapManipulator.straightLineFromPosition(map,player == 1 ? g.Opponent : g.Player,direction);
-            int distance = MapManipulator.distanceStraightLine(map,player == 1 ? g.Opponent : g.Player,direction);
-            MapAnalyzer m = new MapAnalyzer(newMap);
-
-            //m.printMap();
+           MapAnalyzer m = new MapAnalyzer(g.Map);
             
-            int playerFieldSize = m.fieldSize(player == 1 ? g.Opponent : g.Player);
-            int opponentFieldSize = m.fieldSize(player == 0 ? g.Opponent : g.Player);
+           int playerFieldSize = m.fieldSize(player == 1 ? g.Opponent : g.Player);
+           int opponentFieldSize = m.fieldSize(player == 0 ? g.Opponent : g.Player);
 
-            //Console.Error.WriteLine("Utility cutoff: " + (playerFieldSize-opponentFieldSize));
-
-            int evaluation = playerFieldSize - opponentFieldSize;
-            if(evaluation> 0) return evaluation; //magic number here, attention
-            else return 0;
+           return playerFieldSize - opponentFieldSize;
             
        }
 

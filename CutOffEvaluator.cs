@@ -31,22 +31,22 @@ namespace TronBot
             if (g.Player.X - 1 == g.Opponent.X && g.Player.Y == g.Opponent.Y) score -= -50;
             if (g.Player.X == g.Opponent.X && g.Player.Y + 1 == g.Opponent.Y) score -= -50;
             if (g.Player.X == g.Opponent.X && g.Player.Y - 1 == g.Opponent.Y) score -= -50;
+            if (g.Player.X +1== g.Opponent.X && g.Player.Y - 1 == g.Opponent.Y) score -= -50;
+            if (g.Player.X-1 == g.Opponent.X && g.Player.Y - 1 == g.Opponent.Y) score -= -50;
+            if (g.Player.X+1 == g.Opponent.X && g.Player.Y + 1 == g.Opponent.Y) score -= -50;
+            if (g.Player.X-1 == g.Opponent.X && g.Player.Y + 1 == g.Opponent.Y) score -= -50;
             
 
             //Console.Error.WriteLine(MyTronBot.intDirectionToString(direction));
             //Console.Error.WriteLine("OpponentFieldSize: " + opponentFieldSize + " PlayerFieldSize: " + playerFieldSize);
             //Console.Error.WriteLine("Utility cutoff: " + (playerFieldSize - opponentFieldSize) + "\n");
-            score = score + playerFieldSize - opponentFieldSize;
+
 
             //Console.Error.WriteLine("Distance Eval: " + distanceEvaluation + "\nEval: " + evaluation);
             //if (opponentFieldSize < playerFieldSize) finalEval = playerFieldSize + distanceEvaluation;
 
             //Console.Error.WriteLine("FinalEval: " + finalEval);
             return score;
-
-            //      if(finalEval > 0) return finalEval;
-            //      else return 0;
-
         }
     }
 }

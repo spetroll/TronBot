@@ -23,54 +23,59 @@ namespace TronBot
                 return randomMove();
             }
 
-            int distance = ma.distance(g.Player, g.Opponent);
             bool separated = !ma.sameField(g.Player, g.Opponent);
-            
-            EvaluatorCollection ec = new EvaluatorCollection();
 
+            EvaluatorCollection ec = new EvaluatorCollection();
+            Search s;
             if (!separated)
             {
                 ec.add(new CutOffEvaluator());
-                ec.add(new VoronoiEvaluator());                
+                ec.add(new VoronoiEvaluator());
+                s = new MiniMaxSearch();
             }
             else
             {
                 ec.add(new FloodFillEvaluator());
+                s = new MiniMaxSearch();
             }
             MultiplyEvaluators finalEval = new MultiplyEvaluators(new GameWinEvaluator(), ec);
-            
-            
-            MiniMaxSearch minmax = new MiniMaxSearch();
+
             timer.Stop();
-            int depth = 1;
+            int depth = 4;
             double time = timer.Duration * 1000;
-            GameState best = new GameState(minmax.doSearch(g, finalEval, Player, depth, separated, time));
-            while (time < 700)
+            GameState best = new GameState();
+            while (time < 500)
             {
-                depth ++;
+                depth++;
                 timer.Start();
-                best = new GameState(minmax.doSearch(g, finalEval, Player, depth, separated, time));
+                best = new GameState(s.doSearch(g, finalEval, depth, time));
                 timer.Stop();
                 time += timer.Duration * 1000;
             }
             //Console.Error.WriteLine(separated + " " + time + " " + depth);
             //ma.printMap();
-            return intDirectionToString(best.previousPlayerMove.Direction);
-            //return "n";
 
+            if (best.previousPlayerMove == null)
+                return "N";
+            else 
+                return intDirectionToString(best.previousPlayerMove.Direction);
 
         }
 
 
         public static void Main()
         {
-            while (true)
+            try
             {
-                Map.Initialize();
-                //Timer.Start();
-                Map.MakeMove(MakeMove());
-                //Timer.Stop();
-                //Console.Error.WriteLine("Move: {0:0.0000} ms", Timer.Duration*1000);
+                while (true)
+                {
+                    Map.Initialize();
+                    Map.MakeMove(MakeMove());
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.log(e.Message);
             }
         }
 
